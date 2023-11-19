@@ -21,9 +21,8 @@ async function getChatCompletion(prompt) {
 
     const chatCompletion = await openaiClient.chat.completions.create({
         // model: "gpt-3.5-turbo",
-        // model: "gpt-3.5-turbo-16k",
-        model: "text-davinci-003",
-        // model: "gpt-3.5-turbo-instruct",
+        model: "gpt-3.5-turbo-16k",
+        // model: "text-davinci-003",
         messages: chatHistory,
     });
 
