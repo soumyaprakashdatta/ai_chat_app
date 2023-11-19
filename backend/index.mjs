@@ -19,7 +19,40 @@ const staticPath = path.join(__dirname, "dist");
 // setup express server and serve ui
 const app = express();
 app.use(cors());
+app.use(express.json());
 app.use(express.static(staticPath));
+
+app.get("/chat_completion", async (req, res) => {
+    let prompt = req.body?.prompt;
+
+    console.log(req.body);
+
+    if (prompt == null) {
+        res.statusCode = 400;
+        res.send("prompt must not be empty");
+        return;
+    }
+
+    if (prompt.message == null) {
+        res.statusCode = 400;
+        res.send("prompt message must not be empty");
+        return;
+    }
+
+    const completion = await openai.getChatCompletion(prompt.message);
+    console.log(completion);
+
+    res.statusCode = 200;
+    res.send(completion);
+});
+
+app.get("/embeddings", async (req, res) => {
+    const embeddings = await openai.getEmbeddings();
+    console.log(embeddings);
+
+    res.statusCode = 200;
+    res.json(embeddings);
+});
 
 // setup socket server to receive requests
 const chatHistory = [];
