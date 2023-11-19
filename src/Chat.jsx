@@ -1,11 +1,14 @@
-import { Row, Col, Space, Layout } from 'antd'
+import { Row, Col, Layout, Input, Button } from 'antd'
 import React from 'react'
 import { useState } from 'react'
+import { SendOutlined } from '@ant-design/icons'
 const { Footer, Content } = Layout
+
+const { TextArea } = Input
 
 const contentStyle = {
   textAlign: 'center',
-  height: 750,
+  height: 'calc(100vh - 100px)',
   lineHeight: '120px',
   color: '#fff',
   backgroundColor: '#108ee9',
@@ -13,9 +16,10 @@ const contentStyle = {
 
 const footerStyle = {
   textAlign: 'center',
-  color: '#fff',
   height: 100,
-  backgroundColor: '#7dbcea',
+  position: 'sticky',
+  bottom: '0',
+  padding: '0px',
 }
 
 function Chat() {
@@ -66,53 +70,69 @@ function Chat() {
   }
 
   return (
-    <Space
-      direction="vertical"
-      style={{ height: '100vh', width: '100%' }}
-      size={[0, 48]}
-    >
-      <Layout>
-        <Content style={contentStyle}>
-          <Row>
-            <Col>
-              {chatList.map((chat, index) => {
-                return (
-                  <div
-                    key={index}
-                    style={{
-                      backgroundColor:
-                        chat.role == 'client' ? 'yellow' : 'cyan',
-                    }}
-                  >
-                    <p>{chat.message}</p>
-                  </div>
-                )
-              })}
-            </Col>
-            {loading ? <div>loading data ... </div> : null}
-            {error ? <div>error: {JSON.stringify(error)}</div> : null}
-          </Row>
-        </Content>
-        <Footer style={footerStyle}>
+    <Layout style={{ minHeight: '100vh' }}>
+      <Content style={contentStyle}>
+        <Row>
           <Col>
-            <input
-              type="text"
-              value={message}
-              placeholder="Type your message"
-              onChange={handleInputText}
-            />
-            <div>
-              <button
-                onClick={() => getChatCompletions()}
-                disabled={loading || message.trim().length == 0}
-              >
-                Send
-              </button>
-            </div>
+            {chatList.map((chat, index) => {
+              return (
+                <div
+                  key={index}
+                  style={{
+                    backgroundColor: chat.role == 'client' ? 'yellow' : 'cyan',
+                  }}
+                >
+                  <p>{chat.message}</p>
+                </div>
+              )
+            })}
           </Col>
-        </Footer>
-      </Layout>
-    </Space>
+          {loading ? <div>loading data ... </div> : null}
+          {error ? <div>error: {JSON.stringify(error)}</div> : null}
+        </Row>
+      </Content>
+      <Footer style={footerStyle}>
+        <Row>
+          <Col
+            span={22}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-around',
+              'align-items': 'center',
+              padding: '10px',
+            }}
+          >
+            <TextArea
+              showCount
+              maxLength={100}
+              onChange={handleInputText}
+              placeholder="Type your prompt"
+              style={{ height: 60, resize: 'none' }}
+              value={message}
+            />
+          </Col>
+          <Col
+            span={2}
+            style={{
+              padding: '10px',
+            }}
+          >
+            <Button
+              onClick={() => getChatCompletions()}
+              disabled={loading || message.trim().length == 0}
+              block={true}
+              icon={<SendOutlined />}
+              size="large"
+              type="primary"
+              style={{
+                height: '100%',
+                width: '100%',
+              }}
+            />
+          </Col>
+        </Row>
+      </Footer>
+    </Layout>
   )
 }
 
