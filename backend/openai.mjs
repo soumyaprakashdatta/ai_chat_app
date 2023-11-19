@@ -19,8 +19,7 @@ async function getChatCompletion(prompt) {
   chatHistory.push({ role, content: prompt })
 
   const chatCompletion = await openaiClient.chat.completions.create({
-    // model: "gpt-3.5-turbo",
-    model: 'gpt-3.5-turbo-16k',
+    model: 'gpt-3.5-turbo',
     // model: "text-davinci-003",
     messages: chatHistory,
   })
