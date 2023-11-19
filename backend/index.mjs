@@ -1,12 +1,15 @@
 import express from 'express'
 import cors from 'cors'
 import path from 'path'
+import multer from 'multer'
 import 'dotenv/config'
-
 import * as openai from './openai.mjs'
 
 // initialize open ai client
 openai.initOpenAIClient()
+
+// configure file upload
+const upload = multer({ dest: 'uploads/' })
 
 const port = 8000
 
@@ -17,7 +20,17 @@ const staticPath = path.join(__dirname, 'dist')
 const app = express()
 app.use(cors())
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 app.use(express.static(staticPath))
+
+app.post('/upload_files', upload.array('files'), async (req, res) => {
+  console.log(req.body)
+  console.log(req.files)
+  await new Promise((resolve) => {
+    setTimeout(resolve, 5000)
+  })
+  res.json({ message: 'successfully uploaded files' })
+})
 
 app.post('/chat_completion', async (req, res) => {
   let prompt = req.body?.prompt

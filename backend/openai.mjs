@@ -33,6 +33,13 @@ async function getChatCompletion(prompt) {
   return completion
 }
 
-async function getEmbeddings() {}
+async function getEmbeddings() {
+  if (openaiClient == null) throw new Error('openai client is not initialized')
+
+  openaiClient.embeddings.create({
+    model: 'text-embedding-ada-002',
+    input: [],
+  })
+}
 
 export { initOpenAIClient, getChatCompletion, getEmbeddings }
