@@ -11,7 +11,7 @@ function App() {
       <Col
         span={18}
         style={{
-          backgroundColor: 'blue',
+          backgroundColor: '#262626',
           height: '100vh',
         }}
       >

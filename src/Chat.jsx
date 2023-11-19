@@ -1,4 +1,4 @@
-import { Row, Col, Layout, Input, Button } from 'antd'
+import { Row, Col, Layout, Input, Button, Card, Flex } from 'antd'
 import React from 'react'
 import { useState } from 'react'
 import { SendOutlined } from '@ant-design/icons'
@@ -11,7 +11,7 @@ const contentStyle = {
   height: 'calc(100vh - 100px)',
   lineHeight: '120px',
   color: '#fff',
-  backgroundColor: '#108ee9',
+  backgroundColor: '#003a8c',
 }
 
 const footerStyle = {
@@ -20,11 +20,21 @@ const footerStyle = {
   position: 'sticky',
   bottom: '0',
   padding: '0px',
+  backgroundColor: '#001d66',
 }
+
+const intialChat = [
+  { role: 'client', message: 'what is a cat ?' },
+  {
+    role: 'server',
+    message:
+      'A cat is a small carnivorous mammal that is often kept as a pet. It belongs to the Felidae family and is known for its independent nature, agility, and hunting skills. Cats have a flexible body, sharp retractable claws, keen senses, and are known for their grooming behavior. They come in various breeds, colors, and patterns, with the domestic cat being the most popular pet species.',
+  },
+]
 
 function Chat() {
   const [message, setMessage] = useState('')
-  const [chatList, setChatList] = useState([])
+  const [chatList, setChatList] = useState(intialChat)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -73,19 +83,20 @@ function Chat() {
     <Layout style={{ minHeight: '100vh' }}>
       <Content style={contentStyle}>
         <Row>
-          <Col>
-            {chatList.map((chat, index) => {
-              return (
-                <div
-                  key={index}
-                  style={{
-                    backgroundColor: chat.role == 'client' ? 'yellow' : 'cyan',
-                  }}
-                >
-                  <p>{chat.message}</p>
-                </div>
-              )
-            })}
+          <Col
+            style={{
+              display: 'flex',
+              justifyContent: 'space-around',
+              alignItems: 'center',
+              padding: '10px',
+            }}
+            span={24}
+          >
+            <Flex vertical={true}>
+              {chatList.map((chat, index) => {
+                return <ChatMessageBox index={index} chat={chat} />
+              })}
+            </Flex>
           </Col>
           {loading ? <div>loading data ... </div> : null}
           {error ? <div>error: {JSON.stringify(error)}</div> : null}
@@ -133,6 +144,23 @@ function Chat() {
         </Row>
       </Footer>
     </Layout>
+  )
+}
+
+function ChatMessageBox({ index, chat }) {
+  console.log(index, chat)
+  return (
+    <Card
+      style={{
+        width: '100%',
+        backgroundColor: chat.role == 'client' ? '#7cb305' : '#91caff',
+        marginBottom: '10px',
+        padding: '0px',
+      }}
+      key={index}
+    >
+      <div>{chat.message}</div>
+    </Card>
   )
 }
 
