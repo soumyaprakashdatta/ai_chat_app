@@ -39,19 +39,31 @@ app.get("/chat_completion", async (req, res) => {
         return;
     }
 
-    const completion = await openai.getChatCompletion(prompt.message);
-    console.log(completion);
+    try {
+        const completion = await openai.getChatCompletion(prompt.message);
+        console.log(completion);
 
-    res.statusCode = 200;
-    res.send(completion);
+        res.statusCode = 200;
+        res.send(completion);
+    } catch (ex) {
+        console.error(`error while fetching chat completions, err=${ex}`);
+        res.statusCode = 500;
+        res.send(ex);
+    }
 });
 
 app.get("/embeddings", async (req, res) => {
-    const embeddings = await openai.getEmbeddings();
-    console.log(embeddings);
+    try {
+        const embeddings = await openai.getEmbeddings();
+        console.log(embeddings);
 
-    res.statusCode = 200;
-    res.json(embeddings);
+        res.statusCode = 200;
+        res.json(embeddings);
+    } catch (ex) {
+        console.error(`error while fetching embeddings, err=${ex}`);
+        res.statusCode = 500;
+        res.send(ex);
+    }
 });
 
 // setup socket server to receive requests
