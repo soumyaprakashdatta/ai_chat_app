@@ -38,13 +38,13 @@ io.on("connection", (socket) => {
         chatHistory.push({ role: "user", content: data.message });
 
         try {
-            const chatCompletion = await openai.getChatCompletion(chatHistory);
-            console.log(JSON.stringify(chatCompletion));
+            const completion = await openai.getChatCompletion(chatHistory);
+            console.log(completion);
 
             socket.emit("receiveMessage", {
-                message: `${chatCompletion.choices[0].message.content}`,
+                message: completion,
             });
-            chatHistory.push(chatCompletion.choices[0].message.content);
+            chatHistory.push(completion);
         } catch (ex) {
             console.error(
                 `error while fetching chat completions, err=${JSON.stringify(
