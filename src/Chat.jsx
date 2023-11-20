@@ -10,7 +10,7 @@ import {
   Tag,
 } from 'antd'
 import React from 'react'
-import { useState, useReducer } from 'react'
+import { useState, useReducer, useRef, useEffect } from 'react'
 import { SendOutlined } from '@ant-design/icons'
 const { Footer, Content } = Layout
 
@@ -60,6 +60,12 @@ function Chat({ currentContext }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
+  const bottomRef = useRef(null)
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [chatList])
+
   async function getChatCompletions() {
     setError(null)
     setLoading(true)
@@ -105,7 +111,7 @@ function Chat({ currentContext }) {
       dispatch({
         type: 'add',
         data: {
-          role: 'error',
+          role: 'server',
           message: `error while fetching completion, err=${JSON.stringify(ex)}`,
           context: currentContext,
         },
@@ -137,6 +143,7 @@ function Chat({ currentContext }) {
               {chatList.map((chat, index) => {
                 return <ChatMessageBox index={index} chat={chat} />
               })}
+              <div ref={bottomRef} />
             </Flex>
           </Col>
         </Row>
@@ -221,9 +228,10 @@ function ChatMessageBox({ index, chat }) {
           key={index}
         >
           <Row>
-            <Col span={20}>
+            <Col span={18}>
               <div>{chat.message}</div>
             </Col>
+            <Col span={2} />
             <Col
               span={4}
               style={{
@@ -232,7 +240,7 @@ function ChatMessageBox({ index, chat }) {
                 alignItems: 'center',
               }}
             >
-              <Tag color="#520339">context: {chat.context}</Tag>
+              <Tag color="#262626">context: {chat.context}</Tag>
             </Col>
           </Row>
         </Card>
