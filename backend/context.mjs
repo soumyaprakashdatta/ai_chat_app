@@ -10,6 +10,8 @@ const contexts = {}
 async function loadContextsFromDisk() {
   let dirPath = path.join(__dirname, basePath)
 
+  !fs.existsSync(dirPath) && fs.mkdirSync(dirPath, { recursive: true })
+
   await new Promise((resolve, reject) => {
     fs.readdir(dirPath, (err, files) => {
       if (err != null) {

@@ -96,7 +96,9 @@ app.post('/chat_completion', async (req, res) => {
       )}, context=${JSON.stringify(context)} err=${ex}`
     )
     res.statusCode = 500
-    res.send(ex)
+    res.json({
+      error: ex,
+    })
   }
 })
 

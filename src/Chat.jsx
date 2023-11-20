@@ -46,6 +46,7 @@ const intialChatSample = [
 
 function chatReducer(state, action) {
   if (action.type == 'add') {
+    console.log(state, action)
     return [...state, action.data]
   } else if (action.type == 'remove') {
     console.log(state, action)
@@ -92,6 +93,11 @@ function Chat({ currentContext }) {
         body: JSON.stringify(body),
       })
 
+      if (!raw.ok) {
+        // error processing
+        throw new Error(JSON.stringify(await raw.json()))
+      }
+
       let completion = await raw.json()
 
       dispatch({ type: 'remove', data: {} })
@@ -106,13 +112,14 @@ function Chat({ currentContext }) {
       setMessage('')
       setLoading(false)
     } catch (ex) {
+      console.log('I am here error')
       console.error(ex)
       dispatch({ type: 'remove', data: {} })
       dispatch({
         type: 'add',
         data: {
           role: 'server',
-          message: `error while fetching completion, err=${JSON.stringify(ex)}`,
+          message: 'error while fetching completion!!',
           context: currentContext,
         },
       })
