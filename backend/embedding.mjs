@@ -3,7 +3,6 @@ import {
   MemoryVectorIndex,
   splitTextChunks,
   splitAtToken,
-  upsertIntoVectorIndex,
   throttleMaxConcurrency,
 } from 'modelfusion'
 
@@ -18,7 +17,7 @@ const embeddingModel = new OpenAITextEmbeddingModel({
 async function getChunks(pages) {
   const chunkTokens = await splitTextChunks(
     splitAtToken({
-      maxTokensPerChunk: 100,
+      maxTokensPerChunk: 80,
       tokenizer: embeddingModel.tokenizer,
     }),
     pages

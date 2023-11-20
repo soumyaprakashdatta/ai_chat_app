@@ -34,7 +34,7 @@ const footerStyle = {
   backgroundColor: '#001d66',
 }
 
-const intialChat = [
+const intialChatSample = [
   { role: 'client', message: 'what is a cat ?', context: 'abcd' },
   {
     role: 'server',
@@ -56,7 +56,7 @@ function chatReducer(state, action) {
 
 function Chat({ currentContext }) {
   const [message, setMessage] = useState('')
-  const [chatList, dispatch] = useReducer(chatReducer, intialChat)
+  const [chatList, dispatch] = useReducer(chatReducer, [])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -139,7 +139,7 @@ function Chat({ currentContext }) {
             }}
             span={24}
           >
-            <Flex vertical={true}>
+            <Flex vertical={true} style={{ width: '100%' }}>
               {chatList.map((chat, index) => {
                 return <ChatMessageBox index={index} chat={chat} />
               })}

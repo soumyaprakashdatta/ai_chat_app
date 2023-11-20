@@ -155,8 +155,6 @@ function ChatContext({ currentContext, setContext }) {
           </Col>
         </Row>
       </Col>
-      {loading ? <div>Uploading files ...</div> : null}
-      {error ? <div>Error while uploading files, err={error}</div> : null}
       <Col span={24}>
         <Row>
           <Col
