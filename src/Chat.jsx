@@ -1,6 +1,6 @@
-import { Row, Col, Layout, Input, Button, Card, Flex } from 'antd'
+import { Row, Col, Layout, Input, Button, Card, Flex, Skeleton } from 'antd'
 import React from 'react'
-import { useState } from 'react'
+import { useState, useReducer } from 'react'
 import { SendOutlined } from '@ant-design/icons'
 const { Footer, Content } = Layout
 
@@ -33,15 +33,28 @@ const intialChat = [
   },
 ]
 
+function chatReducer(state, action) {
+  if (action.type == 'add') {
+    return [...state, action.data]
+  } else if (action.type == 'remove') {
+    console.log(state, action)
+    return state.filter((s) => !s.isLoading)
+  }
+  throw Error(`unknown action type, action=${JSON.stringify(action)}`)
+}
+
 function Chat() {
   const [message, setMessage] = useState('')
-  const [chatList, setChatList] = useState(intialChat)
+  const [chatList, dispatch] = useReducer(chatReducer, intialChat)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   async function getChatCompletions() {
     setError(null)
     setLoading(true)
+
+    dispatch({ type: 'add', data: { role: 'client', message: message } })
+    dispatch({ type: 'add', data: { isLoading: true } })
 
     let body = {
       prompt: {
@@ -60,16 +73,20 @@ function Chat() {
 
       let completion = await raw.text()
 
-      const newList = [
-        ...chatList,
-        { role: 'client', message: message },
-        { role: 'server', message: completion },
-      ]
-      setChatList(newList)
+      dispatch({ type: 'remove', data: {} })
+      dispatch({ type: 'add', data: { role: 'server', message: completion } })
       setMessage('')
       setLoading(false)
     } catch (ex) {
       console.error(ex)
+      dispatch({ type: 'remove', data: {} })
+      dispatch({
+        type: 'add',
+        data: {
+          role: 'error',
+          message: `error while fetching completion, err=${JSON.stringify(ex)}`,
+        },
+      })
       setError(ex)
       setLoading(false)
     }
@@ -99,8 +116,6 @@ function Chat() {
               })}
             </Flex>
           </Col>
-          {loading ? <div>loading data ... </div> : null}
-          {error ? <div>error: {JSON.stringify(error)}</div> : null}
         </Row>
       </Content>
       <Footer style={footerStyle}>
@@ -149,19 +164,43 @@ function Chat() {
 }
 
 function ChatMessageBox({ index, chat }) {
-  console.log(index, chat)
+  function getBgColor(role) {
+    if (role == 'client') return '#7cb305'
+    if (role == 'server') return '#91caff'
+    if (role == 'error') return '#ff7875'
+    if (role == 'loading') return '#91caff'
+    return '#7cb305'
+  }
   return (
-    <Card
-      style={{
-        width: '100%',
-        backgroundColor: chat.role == 'client' ? '#7cb305' : '#91caff',
-        marginBottom: '10px',
-        padding: '0px',
-      }}
-      key={index}
-    >
-      <div>{chat.message}</div>
-    </Card>
+    <>
+      {chat.isLoading ? (
+        <Card
+          style={{
+            width: '100%',
+            backgroundColor: getBgColor('loading'),
+            marginBottom: '10px',
+            padding: '0px',
+            height: '100px',
+          }}
+          key={index}
+          loading={chat.isLoading}
+        >
+          <Skeleton loading={chat.isLoading} avatar active></Skeleton>
+        </Card>
+      ) : (
+        <Card
+          style={{
+            width: '100%',
+            backgroundColor: getBgColor(chat.role),
+            marginBottom: '10px',
+            padding: '0px',
+          }}
+          key={index}
+        >
+          <div>{chat.message}</div>
+        </Card>
+      )}
+    </>
   )
 }
 
