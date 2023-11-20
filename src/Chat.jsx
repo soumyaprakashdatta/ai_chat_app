@@ -12,6 +12,7 @@ const contentStyle = {
   lineHeight: '120px',
   color: '#fff',
   backgroundColor: '#003a8c',
+  overflow: 'auto',
 }
 
 const footerStyle = {
@@ -82,7 +83,7 @@ function Chat() {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Content style={contentStyle}>
-        <Row>
+        <Row style={{ hieght: '100%' }}>
           <Col
             style={{
               display: 'flex',
