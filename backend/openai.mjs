@@ -32,6 +32,9 @@ async function getChatCompletion(prompt) {
   return completion
 }
 
+// get completion based on context
+// this will either use openai for completion
+// or will use local embedding data
 async function getChatCompletionWithContext(prompt, context) {
   if (!context) {
     console.log(
