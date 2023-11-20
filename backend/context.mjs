@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import cos_similarity from 'compute-cosine-similarity'
 
 const __dirname = path.resolve()
 const basePath = 'embeddings'
@@ -62,10 +63,33 @@ function getAvailableContexts() {
   return Object.keys(contexts)
 }
 
+async function getMostSimilarChunk(promtEmbeddings, context) {
+  if (context == DEFAULT_CONTEXT) {
+    throw new Error('unable to compute similarity using default context')
+  }
+
+  let maxSimilarityVal = 0
+  let mostSimilarChunk = null
+
+  let matched = contexts[context]
+  if (!matched) throw new Error(`context=${context} is not known`)
+
+  matched.embeddings.forEach((e) => {
+    let s = cos_similarity(promtEmbeddings, e.embedding)
+    if (s > maxSimilarityVal) {
+      maxSimilarityVal = s
+      mostSimilarChunk = e.chunk
+    }
+  })
+
+  return mostSimilarChunk || 'not found'
+}
+
 export {
   loadContextsFromDisk,
   saveToDisk,
   doesContextExist,
   getAvailableContexts,
   DEFAULT_CONTEXT,
+  getMostSimilarChunk,
 }

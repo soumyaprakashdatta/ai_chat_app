@@ -1,4 +1,14 @@
-import { Row, Col, Layout, Input, Button, Card, Flex, Skeleton } from 'antd'
+import {
+  Row,
+  Col,
+  Layout,
+  Input,
+  Button,
+  Card,
+  Flex,
+  Skeleton,
+  Tag,
+} from 'antd'
 import React from 'react'
 import { useState, useReducer } from 'react'
 import { SendOutlined } from '@ant-design/icons'
@@ -25,11 +35,12 @@ const footerStyle = {
 }
 
 const intialChat = [
-  { role: 'client', message: 'what is a cat ?' },
+  { role: 'client', message: 'what is a cat ?', context: 'abcd' },
   {
     role: 'server',
     message:
       'A cat is a small carnivorous mammal that is often kept as a pet. It belongs to the Felidae family and is known for its independent nature, agility, and hunting skills. Cats have a flexible body, sharp retractable claws, keen senses, and are known for their grooming behavior. They come in various breeds, colors, and patterns, with the domestic cat being the most popular pet species.',
+    context: 'abcd',
   },
 ]
 
@@ -53,7 +64,10 @@ function Chat({ currentContext }) {
     setError(null)
     setLoading(true)
 
-    dispatch({ type: 'add', data: { role: 'client', message: message } })
+    dispatch({
+      type: 'add',
+      data: { role: 'client', message: message, context: currentContext },
+    })
     dispatch({ type: 'add', data: { isLoading: true } })
 
     let body = {
@@ -64,7 +78,7 @@ function Chat({ currentContext }) {
     }
 
     try {
-      let raw = await fetch('/chat_completion', {
+      let raw = await fetch('http://localhost:8000/chat_completion', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,10 +86,17 @@ function Chat({ currentContext }) {
         body: JSON.stringify(body),
       })
 
-      let completion = await raw.text()
+      let completion = await raw.json()
 
       dispatch({ type: 'remove', data: {} })
-      dispatch({ type: 'add', data: { role: 'server', message: completion } })
+      dispatch({
+        type: 'add',
+        data: {
+          role: 'server',
+          message: completion.completion,
+          context: completion.context,
+        },
+      })
       setMessage('')
       setLoading(false)
     } catch (ex) {
@@ -86,6 +107,7 @@ function Chat({ currentContext }) {
         data: {
           role: 'error',
           message: `error while fetching completion, err=${JSON.stringify(ex)}`,
+          context: currentContext,
         },
       })
       setError(ex)
@@ -198,7 +220,21 @@ function ChatMessageBox({ index, chat }) {
           }}
           key={index}
         >
-          <div>{chat.message}</div>
+          <Row>
+            <Col span={20}>
+              <div>{chat.message}</div>
+            </Col>
+            <Col
+              span={4}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-around',
+                alignItems: 'center',
+              }}
+            >
+              <Tag color="#520339">context: {chat.context}</Tag>
+            </Col>
+          </Row>
         </Card>
       )}
     </>

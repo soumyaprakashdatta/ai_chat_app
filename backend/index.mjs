@@ -82,10 +82,13 @@ app.post('/chat_completion', async (req, res) => {
       prompt.message,
       context
     )
-    console.log(completion)
+    // console.log(completion)
 
     res.statusCode = 200
-    res.send(completion)
+    res.json({
+      completion,
+      context,
+    })
   } catch (ex) {
     console.error(
       `error while fetching chat completions, prompt=${JSON.stringify(
