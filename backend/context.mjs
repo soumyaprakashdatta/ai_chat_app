@@ -3,7 +3,7 @@ import path from 'path'
 
 const __dirname = path.resolve()
 const basePath = 'embeddings'
-
+const DEFAULT_CONTEXT = 'OpenAI-GPT'
 const contexts = {}
 
 async function loadContextsFromDisk() {
@@ -67,4 +67,5 @@ export {
   saveToDisk,
   doesContextExist,
   getAvailableContexts,
+  DEFAULT_CONTEXT,
 }

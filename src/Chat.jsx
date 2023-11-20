@@ -43,7 +43,7 @@ function chatReducer(state, action) {
   throw Error(`unknown action type, action=${JSON.stringify(action)}`)
 }
 
-function Chat() {
+function Chat({ currentContext }) {
   const [message, setMessage] = useState('')
   const [chatList, dispatch] = useReducer(chatReducer, intialChat)
   const [loading, setLoading] = useState(false)
@@ -60,6 +60,7 @@ function Chat() {
       prompt: {
         message: message,
       },
+      context: currentContext,
     }
 
     try {

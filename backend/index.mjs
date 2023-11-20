@@ -63,43 +63,6 @@ app.post('/upload_files', upload.array('files'), async (req, res) => {
 
 app.post('/chat_completion', async (req, res) => {
   let prompt = req.body?.prompt
-
-  console.log(req.body)
-
-  if (prompt == null) {
-    res.statusCode = 400
-    res.send('prompt must not be empty')
-    return
-  }
-
-  if (prompt.message == null) {
-    res.statusCode = 400
-    res.send('prompt message must not be empty')
-    return
-  }
-
-  try {
-    const completion = await openai.getChatCompletion(prompt.message)
-    console.log(completion)
-
-    res.statusCode = 200
-    res.send(completion)
-  } catch (ex) {
-    console.error(`error while fetching chat completions, err=${ex}`)
-    res.statusCode = 500
-    res.send(ex)
-  }
-})
-
-app.get('/available_contexts', async (req, res) => {
-  res.statusCode = 200
-  res.json({
-    contexts: context.getAvailableContexts(),
-  })
-})
-
-app.post('/chat_completion_with_context', async (req, res) => {
-  let prompt = req.body?.prompt
   let context = req.body?.context
 
   if (prompt == null) {
@@ -114,12 +77,6 @@ app.post('/chat_completion_with_context', async (req, res) => {
     return
   }
 
-  if (context == null) {
-    res.statusCode = 400
-    res.send('context must not be empty')
-    return
-  }
-
   try {
     const completion = await openai.getChatCompletionWithContext(
       prompt.message,
@@ -131,11 +88,20 @@ app.post('/chat_completion_with_context', async (req, res) => {
     res.send(completion)
   } catch (ex) {
     console.error(
-      `error while fetching chat completions with context, err=${ex}`
+      `error while fetching chat completions, prompt=${JSON.stringify(
+        prompt
+      )}, context=${JSON.stringify(context)} err=${ex}`
     )
     res.statusCode = 500
     res.send(ex)
   }
+})
+
+app.get('/available_contexts', async (req, res) => {
+  res.statusCode = 200
+  res.json({
+    contexts: context.getAvailableContexts(),
+  })
 })
 
 app.get('/embeddings', async (req, res) => {

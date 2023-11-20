@@ -1,4 +1,5 @@
 import OpenAI from 'openai'
+import * as contextProvider from './context.mjs'
 
 let openaiClient = null
 
@@ -31,7 +32,27 @@ async function getChatCompletion(prompt) {
   return completion
 }
 
-async function getChatCompletionWithContext(prompt, context) {}
+async function getChatCompletionWithContext(prompt, context) {
+  if (!context) {
+    console.log(
+      `no context specified, getting completion from open ai, prompt=${JSON.stringify(
+        prompt
+      )}`
+    )
+
+    return getChatCompletion(prompt)
+  } else if (context == contextProvider.DEFAULT_CONTEXT) {
+    console.log(
+      `default context specified, getting completion from open ai, prompt=${JSON.stringify(
+        prompt
+      )}`
+    )
+
+    return getChatCompletion(prompt)
+  }
+
+  return 'some sample response'
+}
 
 async function getEmbeddings(chunks) {
   if (openaiClient == null) throw new Error('openai client is not initialized')
@@ -45,4 +66,9 @@ async function getEmbeddings(chunks) {
   return embeddings
 }
 
-export { initOpenAIClient, getChatCompletion, getEmbeddings }
+export {
+  initOpenAIClient,
+  getChatCompletion,
+  getEmbeddings,
+  getChatCompletionWithContext,
+}

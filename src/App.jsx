@@ -18,7 +18,7 @@ function App() {
           height: '100vh',
         }}
       >
-        <Chat />
+        <Chat currentContext={context} />
       </Col>
       <Col span={8} style={{ backgroundColor: 'green', height: '100vh' }}>
         <ChatContext currentContext={context} setContext={setContext} />
