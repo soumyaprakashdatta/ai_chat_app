@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Row, Col } from 'antd'
 
 import Chat from './Chat'
 import ChatContext from './ChatContext'
+import { DEFAULT_CONTEXT } from './const'
 
 function App() {
+  let [context, setContext] = useState(DEFAULT_CONTEXT)
+
   return (
     <Row style={{ backgroundColor: 'yellow' }}>
       <Col
@@ -18,7 +21,7 @@ function App() {
         <Chat />
       </Col>
       <Col span={8} style={{ backgroundColor: 'green', height: '100vh' }}>
-        <ChatContext />
+        <ChatContext currentContext={context} setContext={setContext} />
       </Col>
     </Row>
   )

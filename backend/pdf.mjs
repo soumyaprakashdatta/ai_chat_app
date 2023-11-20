@@ -29,7 +29,6 @@ async function loadPdfPages(path) {
       pageNumber: i + 1,
       text: pageContent.items
         .filter((item) => {
-          console.log(item.type, '=>', item.str)
           return item.str != null
         })
         .map((item) => item.str)
