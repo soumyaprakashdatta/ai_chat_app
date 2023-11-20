@@ -7,9 +7,7 @@ const role = 'user'
 
 // init openai client
 function initOpenAIClient() {
-  openaiClient = new OpenAI({
-    apiKey: process.env.API_KEY,
-  })
+  openaiClient = new OpenAI({})
 }
 
 // get chat completions from openai
@@ -33,13 +31,18 @@ async function getChatCompletion(prompt) {
   return completion
 }
 
-async function getEmbeddings() {
+async function getChatCompletionWithContext(prompt, context) {}
+
+async function getEmbeddings(chunks) {
   if (openaiClient == null) throw new Error('openai client is not initialized')
 
-  openaiClient.embeddings.create({
+  const embeddings = await openaiClient.embeddings.create({
     model: 'text-embedding-ada-002',
-    input: [],
+    input: chunks,
+    encoding_format: 'float',
   })
+
+  return embeddings
 }
 
 export { initOpenAIClient, getChatCompletion, getEmbeddings }
