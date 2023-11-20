@@ -14,3 +14,15 @@ body {
 .ant-input-data-count {
     color: white!important;
 }
+
+.ant-upload-list-item-name { 
+  color: #fafafa !important; 
+}
+
+.ant-upload-icon > .anticon { 
+    color: #fafafa !important; 
+}
+
+.ant-upload-list-item .anticon { 
+    color: #fafafa !important; 
+}

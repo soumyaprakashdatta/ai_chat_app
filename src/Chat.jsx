@@ -125,7 +125,7 @@ function Chat() {
             style={{
               display: 'flex',
               justifyContent: 'space-around',
-              'align-items': 'center',
+              alignItems: 'center',
               padding: '10px',
             }}
           >

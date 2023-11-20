@@ -9,7 +9,7 @@ function App() {
   return (
     <Row style={{ backgroundColor: 'yellow' }}>
       <Col
-        span={18}
+        span={16}
         style={{
           backgroundColor: '#262626',
           height: '100vh',
@@ -17,7 +17,7 @@ function App() {
       >
         <Chat />
       </Col>
-      <Col span={6} style={{ backgroundColor: 'green', height: '100vh' }}>
+      <Col span={8} style={{ backgroundColor: 'green', height: '100vh' }}>
         <ChatContext />
       </Col>
     </Row>
