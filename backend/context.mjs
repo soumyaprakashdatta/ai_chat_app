@@ -7,6 +7,8 @@ const basePath = 'embeddings'
 const DEFAULT_CONTEXT = 'OpenAI-GPT'
 const contexts = {}
 
+const minThreshold = 0.5
+
 async function loadContextsFromDisk() {
   let dirPath = path.join(__dirname, basePath)
 
@@ -65,7 +67,7 @@ function getAvailableContexts() {
   return Object.keys(contexts)
 }
 
-async function getMostSimilarChunk(promtEmbeddings, context) {
+async function getMostSimilarChunk(promptEmbeddings, context) {
   if (context == DEFAULT_CONTEXT) {
     throw new Error('unable to compute similarity using default context')
   }
@@ -77,7 +79,7 @@ async function getMostSimilarChunk(promtEmbeddings, context) {
   if (!matched) throw new Error(`context=${context} is not known`)
 
   matched.embeddings.forEach((e) => {
-    let s = cos_similarity(promtEmbeddings, e.embedding)
+    let s = cos_similarity(promptEmbeddings, e.embedding)
     if (s > maxSimilarityVal) {
       maxSimilarityVal = s
       mostSimilarChunk = e.chunk
@@ -87,6 +89,38 @@ async function getMostSimilarChunk(promtEmbeddings, context) {
   return mostSimilarChunk || 'not found'
 }
 
+// gets topk most similar chunks
+async function getSimilarChunks(promptEmbeddings, context, topk) {
+  if (context == DEFAULT_CONTEXT) {
+    throw new Error('unable to compute similarity using default context')
+  }
+
+  let similarChunks = []
+
+  let matched = contexts[context]
+  if (!matched) throw new Error(`context=${context} is not known`)
+
+  matched.embeddings.forEach((e) => {
+    let s = cos_similarity(promptEmbeddings, e.embedding)
+    if (s > minThreshold) {
+      similarChunks.push({
+        similarity: s,
+        chunk: e.chunk,
+      })
+    }
+  })
+
+  similarChunks.sort(function (a, b) {
+    return parseFloat(b.similarity) - parseFloat(a.similarity)
+  })
+
+  if (topk > similarChunks.length) {
+    return similarChunks.map((chunk) => chunk.chunk)
+  }
+
+  return similarChunks.slice(0, topk).map((chunk) => chunk.chunk)
+}
+
 export {
   loadContextsFromDisk,
   saveToDisk,
@@ -94,4 +128,5 @@ export {
   getAvailableContexts,
   DEFAULT_CONTEXT,
   getMostSimilarChunk,
+  getSimilarChunks,
 }

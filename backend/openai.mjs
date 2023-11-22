@@ -65,10 +65,22 @@ async function getChatCompletionWithContext(prompt, context) {
   }
 
   let promptEmbeddings = await getEmbeddings([prompt])
-  return contextProvider.getMostSimilarChunk(
+
+  let similarChunks = await contextProvider.getSimilarChunks(
     promptEmbeddings.data[0].embedding,
-    context
+    context,
+    3
   )
+
+  let data = similarChunks.join('\n')
+  let revisedPrompt = `
+    info: ${data}
+    question: ${prompt}
+
+    please provide answer for the question based on provided info
+  `
+  console.log(revisedPrompt)
+  return getChatCompletion(revisedPrompt)
 }
 
 async function getEmbeddings(chunks) {
