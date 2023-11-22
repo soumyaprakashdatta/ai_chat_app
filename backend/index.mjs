@@ -35,6 +35,14 @@ app.post('/upload_files', upload.array('files'), async (req, res) => {
 
   let { name, files } = req.body
 
+  if (name == context.DEFAULT_CONTEXT) {
+    res.statusCode = 400
+    res.send(
+      `context name should be different from the default context name "${context.DEFAULT_CONTEXT}"`
+    )
+    return
+  }
+
   if (context.doesContextExist(name)) {
     res.statusCode = 400
     res.send('context with the same name already exists')
