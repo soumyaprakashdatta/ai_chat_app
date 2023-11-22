@@ -5,7 +5,6 @@ import multer from 'multer'
 import 'dotenv/config'
 import * as openai from './openai.mjs'
 import * as pdf from './pdf.mjs'
-import * as embedding from './embedding.mjs'
 import * as context from './context.mjs'
 
 // load context from disk
@@ -49,16 +48,17 @@ app.post('/upload_files', upload.array('files'), async (req, res) => {
     return
   }
 
-  let mergedChunks = []
-
   // read files
   let promises = req.files.map((file) => pdf.loadPdfPages(file.path))
   let pages = await Promise.all([...promises])
 
   // create chunks and merge them
-  promises = pages.map((page) => embedding.getChunks(page))
-  let chunks = await Promise.all([...promises])
+  let mergedChunks = []
+  let chunks = []
+  promises = pages.map((page) => openai.getChunksLangchain(page))
+  chunks = await Promise.all([...promises])
   chunks.forEach((chunkPerFile) => mergedChunks.push(...chunkPerFile))
+  // console.log(`merged chunks: ${JSON.stringify(mergedChunks)}`)
 
   // create embeddings
   let embeddings = await openai.getEmbeddings(mergedChunks)

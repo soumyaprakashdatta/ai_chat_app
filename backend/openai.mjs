@@ -6,6 +6,16 @@ let openaiClient = null
 const chatHistory = []
 const role = 'user'
 
+import { Document } from 'langchain/document'
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
+
+// init text splitter
+const langchainTextSplitter = new RecursiveCharacterTextSplitter({
+  chunkSize: 500,
+  chunkOverlap: 50,
+  separators: ['•', '\n', '.'],
+})
+
 // init openai client
 function initOpenAIClient() {
   openaiClient = new OpenAI({})
@@ -73,9 +83,24 @@ async function getEmbeddings(chunks) {
   return embeddings
 }
 
+// get chunks for pages using langchain RecursiveCharacterTextSplitter
+async function getChunksLangchain(pages) {
+  let mergedChunks = []
+  let promises = pages.map((page) =>
+    langchainTextSplitter.splitDocuments([
+      new Document({ pageContent: page.text }),
+    ])
+  )
+  let chunks = await Promise.all([...promises])
+  chunks.forEach((chunkPerFile) => mergedChunks.push(...chunkPerFile))
+
+  return mergedChunks.map((chunk) => chunk.pageContent)
+}
+
 export {
   initOpenAIClient,
   getChatCompletion,
   getEmbeddings,
   getChatCompletionWithContext,
+  getChunksLangchain,
 }
