@@ -64,7 +64,7 @@ app.post('/upload_files', upload.array('files'), async (req, res) => {
   let embeddings = await openai.getEmbeddings(mergedChunks)
 
   // persist embeddings on disk
-  context.saveToDisk(name, files, mergedChunks, embeddings)
+  context.saveToDisk(name, req.files, mergedChunks, embeddings)
 
   res.json({ message: 'successfully uploaded files' })
 })
