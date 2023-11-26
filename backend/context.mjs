@@ -35,7 +35,6 @@ async function loadContextsFromDisk() {
           contexts[parsed.name] = parsed
         } else if (file.endsWith('.xlsx')) {
           let parsed = xlsx.parse(content)
-          console.log(parsed)
           if (parsed.length != 2) {
             console.error(
               `error while loading context from file=${file}, err=invalid format`
