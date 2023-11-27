@@ -20,7 +20,7 @@ function ChatContext({ currentContext, setContext }) {
   async function fetchAvailableContexts() {
     setLoadingContexts(true)
     try {
-      let raw = await fetch('http://localhost:8000/available_contexts')
+      let raw = await fetch('/available_contexts')
       let res = await raw.json()
       setContexts(res.contexts)
     } catch (ex) {

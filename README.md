@@ -6,7 +6,7 @@
    1. Set environment variable `export OPENAI_API_KEY=<api key from openai>`
    2. Create `.env` file with content of `OPENAI_API_KEY=<api key from openai>`
 4. Run app: `npm run app`
-5. App can be accessed at: `http://localhost:8000/` (please make sure nothing else is running on that port)
+5. App can be accessed at: `http://localhost:3000/` (please make sure nothing else is running on that port)
 
 
 # Resources

@@ -85,7 +85,7 @@ function Chat({ currentContext }) {
     }
 
     try {
-      let raw = await fetch('http://localhost:8000/chat_completion', {
+      let raw = await fetch('/chat_completion', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

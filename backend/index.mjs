@@ -16,7 +16,7 @@ openai.initOpenAIClient()
 // configure file upload
 const upload = multer({ dest: 'uploads/' })
 
-const port = 8000
+const port = 3000
 
 const __dirname = path.resolve()
 const staticPath = path.join(__dirname, 'dist')
